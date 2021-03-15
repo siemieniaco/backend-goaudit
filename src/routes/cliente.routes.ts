@@ -7,7 +7,7 @@ const clientesRouter = Router();
 
 clientesRouter.post('/', clienteControllers.novoCliente);
 
-clientesRouter.get('/', clienteControllers.getCliente);
+clientesRouter.get('/:busca', clienteControllers.getCliente);
 
 clientesRouter.get('/all', clienteControllers.getAllClientes);
 

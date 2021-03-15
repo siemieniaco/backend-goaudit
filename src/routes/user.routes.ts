@@ -8,5 +8,6 @@ const userRouter = Router();
 //userRouter.post('/login', userControllers.loginUser);
 
 userRouter.post('/cadastro', userControllers.createUser);
+userRouter.post('/login', userControllers.signUser);
 
 export default userRouter;

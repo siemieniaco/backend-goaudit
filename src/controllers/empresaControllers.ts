@@ -1,29 +1,35 @@
 import Empresa from '../models/Empresa';
 import firebase from '../config/db';
+import { Request, Response } from 'express';
 
 const firestore = firebase.firestore();
 
 class EmpresaController {
 
-   public async novaEmpresa(request, response){
+   public async novaEmpresa(request:Request, response:Response){
 
     try{
 
-        const {nome_emp, cod_emp, chave_acesso, data_emp, afiliacao, CNPJ, chave_acesso2} = request.body;
+        const {nome_emp, chave_acesso_emp, afiliacao_emp, CNPJ_emp, chave_acesso2_emp} = request.body;
+
+        const user = firebase.auth().currentUser;
+        console.log(user);
+        const uid = user?.uid;
+
+        const data = new Date();
 
         const n = Math.floor(Math.random() * 1000000000);
         const codigo_emp = n.toString();
-        const afi = 'Líder';
 
-        if(chave_acesso == chave_acesso2){
-        const setDoc = await firestore.collection('Empresa').doc(nome_emp)
-        .set({nome_emp, cod_emp:codigo_emp, chave_acesso, data_emp:new Date(), afiliacao:afi, CNPJ});
+        const empresa = new Empresa(nome_emp, codigo_emp, chave_acesso_emp, data, afiliacao_emp, CNPJ_emp, chave_acesso2_emp, uid);  
+
+        if(request.body.chave_acesso_emp == request.body.chave_acesso2_emp){
+            await firestore.collection('empresa').doc(nome_emp).set(empresa);
+            response.send('Empresa adicionada!');
+
         }else{
             return response.status(400).send('As senhas não correspondem!');
-        }
-
-        response.send('Empresa adicionada!');
-
+            }
         }catch(error){
             response.status(400).send('Ocorreu um erro!');
         }

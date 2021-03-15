@@ -1,33 +1,36 @@
 import firebase from '../config/db';
-import Cliente from '../models/Cliente';
+import  Cliente from '../models/Cliente';
+import {Request,Response} from 'express';
 
 const firestore = firebase.firestore();
 
 class ClienteController {
 
-public async novoCliente(request, response){
+public async novoCliente(request:Request, response:Response){
 
     try{
 
-        const {nome_cliente, cpf, data_cliente, email_cliente, endereco} = request.body;
+        const {nome_c, cpf_cnpj_c, email_c, endereco_c, numero_c} = request.body;
 
         const n = Math.floor(Math.random() * 1000000000);
         const codigo_c = n.toString();
 
-        await firestore.collection('Clientes').doc(codigo_c)
-        .set({nome_cliente, cpf, data_cliente, email_cliente, endereco, cod_cliente:codigo_c});
+        const data = new Date();
+
+        const cliente = new Cliente(nome_c, cpf_cnpj_c, data, email_c, endereco_c, codigo_c, numero_c);
+
+        await firestore.collection('clientes').doc(nome_c).set(Object.assign({},cliente));
 
         response.send('Cliente adicionado!');
 
         }catch(error){
-            response.status(400).send('Ocorreu um erro!');
-            response.send(Error);
+            response.status(400).send(error.message);
         }
     }
 
-    public async getAllClientes(request, response){
+    public async getAllClientes(request:Request, response:Response){
         try {
-            const clientes = firestore.collection('Clientes');
+            const clientes = firestore.collection('clientes');
             const data = await clientes.get();
             const clientesArray: Cliente[] = [];
             if(data.empty) {
@@ -35,12 +38,13 @@ public async novoCliente(request, response){
             }else {
                 data.forEach(doc => {
                     const cliente = new Cliente(
-                        doc.data().nome_cliente,
-                        doc.data().cpf,
-                        doc.data().data_cliente,
-                        doc.data().email_cliente,
-                        doc.data().endereco,
-                        doc.data().cod_cliente
+                        doc.data().nome_c,
+                        doc.data().cpf_cnpj_c,
+                        doc.data().data_c,
+                        doc.data().email_c,
+                        doc.data().endereco_c,
+                        doc.data().cod_c,
+                        doc.data().numero_c
                     );
                     clientesArray.push(cliente);
                 });
@@ -51,27 +55,26 @@ public async novoCliente(request, response){
         }
     }
 
-    public async getCliente(request, response) {
+    public async getCliente(request:Request, response:Response) {
         try{
-            const id = request.params.id;
-            const cliente = firestore.collection('Cliente').doc(id);
-            const data = await cliente.get();
+            const busca = request.params.busca;
+            const cliente = await firestore.collection('clientes').doc(busca).get();
 
-            if(!data.exists) {
+            if(!cliente.exists) {
                 response.status(404).send('Cliente nao encontrado!');
             }else {
-                response.send(data.data());
+                response.send(cliente.data());
             }
         }catch (error) {
             response.status(400).send(error.message);
         }
     }
 
-    public async attCliente(request, response){
+    public async attCliente(request:Request, response:Response){
         try {
-            const id = request.params.id;
+            const busca = request.params.busca;
             const data = request.body;
-            const cliente =  firestore.collection('Cliente').doc(id);
+            const cliente =  firestore.collection('clientes').doc(busca);
             await cliente.update(data);
             response.send('As informações do cliente foram atualizadas!');        
         } catch (error) {
@@ -79,10 +82,10 @@ public async novoCliente(request, response){
         }
     }
 
-    public async delCliente(request, response){
+    public async delCliente(request:Request, response:Response){
         try {
-            const id = request.params.id;
-            await firestore.collection('Cliente').doc(id).delete();
+            const busca = request.params.busca;
+            await firestore.collection('clientes').doc(busca).delete();
             response.send('Cliente excluido!');
         } catch (error) {
             response.status(400).send(error.message);

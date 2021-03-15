@@ -1,18 +1,20 @@
 class Cliente {
-    nome_cliente:string;
-    cpf:string;
-    data_cliente:Date;
-    email_cliente:string;
-    endereco:string;
-    cod_cliente:string;
+    nome_c:string;
+    cpf_cnpj_c:string;
+    data_c:Date;
+    email_c:string;
+    endereco_c:string;
+    cod_c:string;
+    numero_c:string;
 
-    constructor(nome_cliente:string,cpf:string, data_cliente:Date, email_cliente:string, endereco:string,cod_cliente:string){
-        this.nome_cliente = nome_cliente;
-        this.cpf = cpf;
-        this.data_cliente = data_cliente;
-        this.email_cliente = email_cliente;
-        this.endereco = endereco;
-        this.cod_cliente = cod_cliente;
+    constructor(nome_c:string,cpf_cnpj_c:string, data_c:Date, email_c:string, endereco_c:string, cod_c:string, numero_c:string){
+        this.nome_c = nome_c;
+        this.cpf_cnpj_c = cpf_cnpj_c;
+        this.data_c = data_c;
+        this.email_c = email_c;
+        this.endereco_c = endereco_c;
+        this.cod_c = cod_c;
+        this.numero_c = numero_c;
     }
 }
 
