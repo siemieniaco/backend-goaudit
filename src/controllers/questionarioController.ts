@@ -1,15 +1,26 @@
 import firebase from '../config/db';
+import { Request, Response } from 'express';
+import Pergunta from '../models/Pergunta';
+import Questionario from '../models/Questionario';
+
 
 const firestore = firebase.firestore();
 
 
 class questionarioController {
 
-    public async novoQuestionario(request, response) {
+    public async novoQuestionario(request:Request, response:Response) {
         
         try{
 
-           const {iso, nome_q, data_q, nome_auditor, requisito, categoria, id, corpo} = request.body;   
+           const {iso, nome_q, data_q, nome_auditor} = request.body;   
+
+           const code = Math.floor(Math.random() * 1000000000);
+           const codigo_q = code.toString();
+
+           const data = new Date();
+
+           const questionario = new Questionario(iso, nome_q, data_q, codigo_q, nome_auditor)
 
            var res;
 
@@ -67,7 +78,7 @@ class questionarioController {
     }
     */
 
-   public async getQuestionario(request, response) {
+   public async getQuestionario(request:Request, response:Response) {
     try{
         const nome = request.params.nome;
         const questionario = firestore.collection('Questionarios').doc(nome);
@@ -86,7 +97,7 @@ class questionarioController {
     }
 }
 
-public async attQuestionario(request, response){
+public async attQuestionario(request:Request, response:Response){
     try {
         const nome = request.params.nome;
         const data = request.body;
@@ -98,7 +109,7 @@ public async attQuestionario(request, response){
     }
 }
 
-public async delQuestionario(request, response){
+public async delQuestionario(request:Request, response:Response){
     try {
         const nome = request.params.nome;
         await firestore.collection('Questionarios').doc(nome).delete();

@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "dev:server": "ts-node-dev --transpile-only --inspect --ignore node_modules src/server.ts  node --trace-warnings"
+    "dev:server": "ts-node-dev --transpile-only --inspect --ignore node_modules src/server.ts  node --trace-warnings",
+    "proxy": "http://localhost:3333"
   },
   "dependencies": {
     "@types/dotenv": "^8.2.0",
@@ -25,4 +26,5 @@
     "nodemon": "^2.0.7",
     "ts-node-dev": "^1.1.1"
   }
+  
 }

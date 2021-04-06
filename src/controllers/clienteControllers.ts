@@ -28,6 +28,28 @@ public async novoCliente(request:Request, response:Response){
         }
     }
 
+    public async novoCliente(request:Request, response:Response){
+
+        try{
+    
+            const {nome_c, cpf_cnpj_c, email_c, endereco_c, numero_c} = request.body;
+    
+            const n = Math.floor(Math.random() * 1000000000);
+            const codigo_c = n.toString();
+    
+            const data = new Date();
+    
+            const cliente = new Cliente(nome_c, cpf_cnpj_c, data, email_c, endereco_c, codigo_c, numero_c);
+    
+            await firestore.collection('clientes').doc(nome_c).set(Object.assign({},cliente));
+    
+            response.send('Cliente adicionado!');
+    
+            }catch(error){
+                response.status(400).send(error.message);
+            }
+        }
+
     public async getAllClientes(request:Request, response:Response){
         try {
             const clientes = firestore.collection('clientes');
@@ -54,6 +76,27 @@ public async novoCliente(request:Request, response:Response){
             response.status(400).send(error.message);
         }
     }
+
+    public async getClientePers(request:Request, response:Response) {
+        try{
+            
+            const busca = request.params.busca;
+
+            firestore.collection('clientes').doc(busca).onSnapshot((doc) => {
+                var source = doc.metadata.hasPendingWrites ? "Local" : "Server";
+                console.log(source, "data", doc.data());
+            });
+
+            if(!cliente.exists) {
+                response.status(404).send('Cliente nao encontrado!');
+            }else {
+                response.send(cliente.data());
+            }
+        }catch (error) {
+            response.status(400).send(error.message);
+        }
+    }
+
 
     public async getCliente(request:Request, response:Response) {
         try{

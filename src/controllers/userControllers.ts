@@ -11,25 +11,21 @@ class UserController {
 
   public async createUser(request:Request, response:Response){
 
-    const{email_u, senha_u, nome_u, vinculo_emp_u}:Users = request.body;
+    const{email_u, senha_u, nome_u}:Users = request.body;
 
-    if(request.body.vinculo_emp_u){
-      empresaControllers.novaEmpresa;
-    }
-
-    const usuario = new Users(email_u, senha_u, nome_u, vinculo_emp_u);
+    const usuario = new Users(email_u, senha_u, nome_u);
 
     firebase.auth().createUserWithEmailAndPassword(email_u, senha_u)
-      .then((user) => {
-          firestore.collection('usuarios').doc(nome_u).set(usuario);
-          firestore.collection('admin').doc().set(user);
-          response.redirect('./home');
+      .then((userCredential) => {
+          firestore.collection('usuarios').doc().set({email_u, senha_u, nome_u});
+
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         response.send();
       });
+      
     }
 
     public async signUser(request:Request,response:Response){
